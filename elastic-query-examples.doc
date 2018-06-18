@@ -67,6 +67,49 @@ PUT resolutions_v2
   }
 }
 
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# !!! if you don't care about scoring put everything in filters
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# !!! it will work faster as well !!!
+
+# year=2013 && (tag=-L4jXoCQvUkCdADItHmi || tag=-L4ju8ut8sCqQxP9Nqll)
+POST /resolutions_v2/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "year": "2013"
+          }
+        },
+        {
+          "nested": {
+            "path": "tags",
+            "query": {
+              "bool": {
+                "should": [
+                  { 
+                    "exists": {
+                      "field": "tags.-L4jXoCQvUkCdADItHmi"
+                    }
+                  },
+                  { 
+                    "exists": {
+                      "field": "tags.-L4ju8ut8sCqQxP9Nqll"
+                  }
+                }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+# prabhupada && year =2013 && tags = -L4jXoCQvUkCdADItHmi,-L51EGIR448cy7Fe7FVF
+# + filter in title: "position"
 POST /resolutions_v2/_search
 {
   "query": {
