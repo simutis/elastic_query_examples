@@ -1,0 +1,175 @@
+GET /resolutions_v2
+
+GET v3resolutions
+
+GET /_cat/indices?v
+
+GET /resolutions_v2/_search?q=prabhupada
+
+DELETE books
+
+GET _aliases
+
+POST _aliases
+{
+    "actions": [
+        { "add": {
+            "alias": "v3resolutions",
+            "index": "resolutions"
+        }}
+    ]
+}
+
+POST _aliases
+  {
+    "actions": [
+        { "remove": {
+            "alias": "v3resolutions",
+            "index": "resolutions"
+        }},
+        { "add": {
+            "alias": "v3resolutions",
+            "index": "resolutions_v2"
+        }}
+    ]
+}
+
+DELETE resolutions
+
+PUT resolutions_v2
+{
+  "mappings": {
+    "_doc": {
+      "properties": {
+        "category": {
+          "type": "keyword"
+        },
+        "published": {
+          "type": "boolean"
+        },
+        "resolution": {
+          "type": "text"
+        },
+        "section": {
+          "type": "keyword"
+        },
+        "title": {
+          "type": "text"
+        },
+        "year": {
+          "type": "long"
+        },
+        "tags": {
+          "type": "nested"
+        }
+      }
+    }
+  }
+}
+
+POST /resolutions_v2/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "resolution": "prabhupada"
+          }
+        },
+        {
+          "term": {
+            "year": "2013"
+          }
+        },
+        {
+          "nested": {
+            "path": "tags",
+            "query": {
+              "bool": {
+                "should": [
+                  { 
+                    "exists": {
+                      "field": "tags.-L4jXoCQvUkCdADItHmi"
+                    }
+                  },
+                  { 
+                    "exists": {
+                      "field": "tags.-L51EGIR448cy7Fe7FVF"
+                  }
+                }]
+              }
+            }
+          }
+        }
+      ],
+      "must_not": {
+        "term": {
+          "field2": "Y"
+        }
+      },
+      "filter": [
+        {
+          "term": {
+            "title": "position"
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+POST /resolutions_v2/_search
+{
+  "query": {
+    "match": {
+      "resolution": "prabhupada"
+    }
+  }
+}
+
+POST /resolutions_v2/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "resolution": "prabhupada"
+          }
+        }
+      ],
+      "must_not": {
+        "term": {
+          "field2": "Y"
+        }
+      },
+      "filter" : {
+          "exists": {
+            "field": "title"
+          }
+        }
+    }
+  }
+}
+
+POST /resolutions_v2/_search
+{
+  "query": {
+    "multi_match" : {
+      "query":    "Prabhupada", 
+      "fields": [ "resolution", "title" ]
+    }
+  }
+}
+
+POST resolutions_v2
+{
+  "some": "data"
+}
+
+ POST /resolutions_v2/_doc/someId?pretty
+{
+  "name": "John Doe"
+}
