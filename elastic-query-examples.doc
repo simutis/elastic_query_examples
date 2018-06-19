@@ -67,6 +67,67 @@ PUT resolutions_v2
   }
 }
 
+POST /resolutions_v2/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "range": {
+            "year": {
+              "gte" : 2012,
+              "lte" : 2013
+            }
+          }
+        },
+        {
+          "nested": {
+            "path": "tags",
+            "query": {
+              "bool": {
+                "should": [
+                  { 
+                    "exists": {
+                      "field": "tags.-L4jXoCQvUkCdADItHmi"
+                    }
+                  },
+                  { 
+                    "exists": {
+                      "field": "tags.-L4ju8ut8sCqQxP9Nqll"
+                  }
+                }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+POST /resolutions_v2/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "resolution": "prabhupada"
+          }
+        },
+        {
+          "range": {
+            "year": {
+              "gte" : 2000,
+              "lte" : 2013
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # !!! if you don't care about scoring put everything in filters
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
