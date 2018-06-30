@@ -171,6 +171,9 @@ POST /resolutions_v2/_search
 
 # prabhupada && year =2013 && tags = -L4jXoCQvUkCdADItHmi,-L51EGIR448cy7Fe7FVF
 # + filter in title: "position"
+# !!! important nested for tags
+
+
 POST /resolutions_v2/_search
 {
   "query": {
